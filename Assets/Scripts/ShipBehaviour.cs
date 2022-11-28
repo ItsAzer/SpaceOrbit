@@ -6,8 +6,10 @@ public class ShipBehaviour : MonoBehaviour
 {
     private Rigidbody2D _rb;
     public GameObject _center; 
-    private float _lookAngle;
+    private float _lookAngle, _direction = 1f;
     [SerializeField] private float _frequency = 1f, _amplitude = 1f;
+    private bool normalized;
+    private float _time =0f;
  
     void Start()
     {
@@ -15,11 +17,18 @@ public class ShipBehaviour : MonoBehaviour
     }
     void Update()
     {
-        float x = Mathf.Cos(Time.time * _frequency) * _amplitude;
-        float y = Mathf.Sin(Time.time * _frequency) * _amplitude;
-        float z = transform.position.z;
-        transform.position = new Vector3(x,y,z);
         
+        float x, y, z;
+        if(_direction > 0)
+        _time+= Time.deltaTime;
+        else 
+        _time -= Time.deltaTime;
+        x =  Mathf.Cos(_time * _frequency ) * _amplitude;
+        y = Mathf.Sin(_time * _frequency) * _amplitude;
+        z = transform.position.z;
+        transform.position = new Vector3(x, y,z);
+        if(Input.GetKeyDown(KeyCode.Mouse0)) _direction = -_direction;
+
         Vector3 v = (-_center.transform.position + transform.position).normalized;
         _lookAngle = 90 + Mathf.Atan2(v.y,v.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f,0f,_lookAngle);
