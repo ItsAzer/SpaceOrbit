@@ -14,15 +14,12 @@ public class ShipBehaviour : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-    }
+        _time = 1.57f/_frequency;
+    }   
     void Update()
     {
         
         float x, y, z;
-        if(_direction > 0)
-        _time+= Time.deltaTime;
-        else 
-        _time -= Time.deltaTime;
         x =  Mathf.Cos(_time * _frequency ) * _amplitude;
         y = Mathf.Sin(_time * _frequency) * _amplitude;
         z = transform.position.z;
@@ -32,7 +29,18 @@ public class ShipBehaviour : MonoBehaviour
         Vector3 v = (-_center.transform.position + transform.position).normalized;
         _lookAngle = 90 + Mathf.Atan2(v.y,v.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f,0f,_lookAngle);
+
+        if(_direction > 0)
+        _time+= Time.deltaTime;
+        else 
+        _time -= Time.deltaTime;
         
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if(col.gameObject.tag=="Score Point") col.GetComponent<ScorePoint>()._touched = true;
+        else GameObject.FindObjectOfType<GameManager>().GameOver(0);
     }
 
 }
