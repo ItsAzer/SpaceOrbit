@@ -28,12 +28,20 @@ public class ShipBehaviour : MonoBehaviour
 
         Vector3 v = (-_center.transform.position + transform.position).normalized;
         _lookAngle = 90 + Mathf.Atan2(v.y,v.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f,0f,_lookAngle);
+        
 
         if(_direction > 0)
-        _time+= Time.deltaTime;
+        {
+            _time+= Time.deltaTime;
+            transform.rotation = Quaternion.Euler(0f,0f,_lookAngle);
+            
+        }
         else 
-        _time -= Time.deltaTime;
+        {
+             _time -= Time.deltaTime;
+             transform.rotation = Quaternion.Euler(0f,0f,_lookAngle-180);
+        }
+       
         
     }
 
