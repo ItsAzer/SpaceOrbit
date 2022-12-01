@@ -21,13 +21,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameIsOver(int index)
     {
-        while(_gameOverDelay <= 1f)
-        {
-            _gameOverDelay += Time.deltaTime;
-            yield return null;
-        }
         SceneManager.LoadScene(index);
-        _gameOverDelay = 0f;
         yield return null;
     }
 }

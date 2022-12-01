@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ShipBehaviour : MonoBehaviour
 {
     private Rigidbody2D _rb;
     public GameObject _center; 
     private float _lookAngle, _direction = 1f;
-    [SerializeField] private float _frequency = 1f, _amplitude = 1f;
+    public float _frequency = 1f, _amplitude = 1f;
     private bool normalized;
     private float _time =0f;
     private BulletShooter _bs;
+    private int score = 0;
+    [SerializeField] TextMeshProUGUI _text;
  
     void Start()
     {
@@ -20,7 +23,6 @@ public class ShipBehaviour : MonoBehaviour
     }   
     void Update()
     {
-        //Debug.Log(Time.time);
         float x, y, z;
         x =  Mathf.Cos(_time* _frequency) * _amplitude;
         y = Mathf.Sin(_time* _frequency) * _amplitude;
@@ -36,7 +38,6 @@ public class ShipBehaviour : MonoBehaviour
         {
             _bs.x =  Mathf.Cos((_time + 2.45f/_bs._bulletSpeed)* _frequency) * _amplitude;
             _bs.y = Mathf.Sin((_time + 2.45f/_bs._bulletSpeed) * _frequency) * _amplitude;
-            _bs.z = transform.position.z;
             _time+= Time.deltaTime;
             transform.rotation = Quaternion.Euler(0f,0f,_lookAngle);
             
@@ -45,7 +46,6 @@ public class ShipBehaviour : MonoBehaviour
         {
             _bs.x =  Mathf.Cos((_time - 2.45f/_bs._bulletSpeed) * _frequency) * _amplitude;
             _bs.y = Mathf.Sin((_time - 2.45f/_bs._bulletSpeed) * _frequency) * _amplitude;
-            _bs.z = transform.position.z;
              _time -= Time.deltaTime;
              transform.rotation = Quaternion.Euler(0f,0f,_lookAngle-180);
         }
@@ -55,7 +55,14 @@ public class ShipBehaviour : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.gameObject.tag=="Score Point") col.GetComponent<ScorePoint>()._touched = true;
+        if(col.gameObject.tag=="Score Point")
+        {
+            col.GetComponent<ScorePoint>()._touched = true;
+            score++;
+            _text.text = score.ToString();
+
+
+        } 
         else GameObject.FindObjectOfType<GameManager>().GameOver(0);
     }
 

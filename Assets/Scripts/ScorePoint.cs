@@ -8,6 +8,5 @@ public class ScorePoint : MonoBehaviour
     void Update()
     {
         if(_touched) Destroy(gameObject);
-        
     }
 }
