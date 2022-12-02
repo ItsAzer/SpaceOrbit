@@ -9,11 +9,9 @@ public class ShipBehaviour : MonoBehaviour
     public GameObject _center; 
     private float _lookAngle, _direction = 1f;
     public float _frequency = 1f, _amplitude = 1f;
-    private bool normalized;
+    private bool normalized, _gameOver = false;
     private float _time =0f;
     private BulletShooter _bs;
-    private int score = 0;
-    [SerializeField] TextMeshProUGUI _text;
  
     void Start()
     {
@@ -23,10 +21,19 @@ public class ShipBehaviour : MonoBehaviour
     }   
     void Update()
     {
+        if(_gameOver)
+        {
+            GetComponent<SpriteRenderer>().color -= new Color(0f,0f,0f,0.003f);
+            transform.localScale = new Vector3(transform.localScale.x + 0.0005f,transform.localScale.y + 0.0005f)
+            *Time.timeScale;
+            StartCoroutine(Destroyed());
+        }
+
         float x, y, z;
         x =  Mathf.Cos(_time* _frequency) * _amplitude;
         y = Mathf.Sin(_time* _frequency) * _amplitude;
         z = transform.position.z;
+        if(!_gameOver)
         transform.position = new Vector3(x, y,z);
         if(Input.GetKeyDown(KeyCode.Mouse0)) _direction = -_direction;
 
@@ -58,12 +65,24 @@ public class ShipBehaviour : MonoBehaviour
         if(col.gameObject.tag=="Score Point")
         {
             col.GetComponent<ScorePoint>()._touched = true;
-            score++;
-            _text.text = score.ToString();
-
-
+            FindObjectOfType<Score>()._score++;
+            col.gameObject.GetComponent<BoxCollider2D>().enabled = false;
         } 
-        else GameObject.FindObjectOfType<GameManager>().GameOver(0);
+        else
+        {
+            _gameOver = true;
+            GetComponent<BoxCollider2D>().enabled = false;
+            FindObjectOfType<Score>()._gameNum = 1;
+            FindObjectOfType<Score>()._score = 0;
+            
+            GameObject.FindObjectOfType<GameManager>().GameOver(1);
+        } 
+    }
+
+    IEnumerator Destroyed()
+    {
+        yield return new WaitForSeconds(1f);
+         Destroy(gameObject);
     }
 
 }

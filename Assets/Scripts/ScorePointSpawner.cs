@@ -6,11 +6,13 @@ public class ScorePointSpawner : MonoBehaviour
 {
     [SerializeField] GameObject _spawnObject, _center;
     private float _lookAngle;
+    [HideInInspector] public int _numberOfPoints = 0;
     void Start()
     {
         float x, y, z;
         for(float i=0f;i<6.28;i=i+0.4f)
         {
+            _numberOfPoints++;
             x =  Mathf.Cos(i) * FindObjectOfType<ShipBehaviour>()._amplitude;
             y = Mathf.Sin(i) * FindObjectOfType<ShipBehaviour>()._amplitude;
             z = 2;
